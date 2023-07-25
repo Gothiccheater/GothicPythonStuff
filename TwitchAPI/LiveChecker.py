@@ -1,17 +1,13 @@
 import requests
+import config
 
 # Twitch API-URL
 url = 'https://api.twitch.tv/helix/streams?user_login={channel_name}'
 
-# Twitch API-Zugriffsschlüssel und Client-ID
-secret = 'zn2ldxf4v5y41q7s4n0023lhbzc09s'
-access_token = 'io5vysyh4uwh6exyv3ujzbjhv18oq5'
-client_id = 'g24x6dbenz9fkmwott2m0ixay11nph'
-
 # Header zusammenstellen
 headers = {
-    'Client-Id': client_id,
-    'Authorization': f'Bearer {access_token}'
+    'Client-Id': config.client_id,
+    'Authorization': f'Bearer {config.access_token}'
 }
 
 def checkLive(channel):
