@@ -20,10 +20,10 @@ def checkLive(channel):
         response = requests.get(url.format(channel_name=channel_name), headers=headers)
         data = response.json()
         if 'data' in data and data['data']:
-            print(f"{channel_name} is live!")
+            print(f"{channel_name} is live! Go to https://www.twitch.tv/{channel_name} to watch!")
         else:
             print(f"{channel_name} is offline.")
-            
+
 # Funktion um User eingeben zu lassen, welche Channel geprüft werden sollen
 def getChannels():
     while True:
