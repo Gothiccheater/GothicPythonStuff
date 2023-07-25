@@ -14,8 +14,9 @@ channelsToCheck = []
 
 # Funktion um channel zu prüfen
 def checkLive(channel):
-# API-Anfrage senden
+    # API-Anfrage senden
     for check in channel:
+        print('----------------------------------------------------------------')
         channel_name = check
         response = requests.get(url.format(channel_name=channel_name), headers=headers)
         data = response.json()
@@ -26,12 +27,15 @@ def checkLive(channel):
 
 # Funktion um User eingeben zu lassen, welche Channel geprüft werden sollen
 def getChannels():
+    print('----------------------------------------------------------------')
     while True:
         channelName = input("Enter a Channel or type 'Exit' to check for live Channels: ")
         if channelName.lower() == 'exit':
             break
-        channelsToCheck.append(channelName)
+        channelsToCheck.append(channelName.lower())
     return channelsToCheck
 
+# Funktionsaufrufe um das Skript auszuführen
 getChannels()
 checkLive(channelsToCheck)
+input()
