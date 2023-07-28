@@ -66,6 +66,11 @@ def display_score():
     score_text = font.render("Score: " + str(score), True, (255, 255, 255))
     window.blit(score_text, (10, 10))
 
+def display_game_over():
+    font = pygame.font.Font(None, 50)
+    game_over_text = font.render("Game Over! Final Score: " + str(score), True, (255, 255, 255), (0,0,0))
+    window.blit(game_over_text, (width // 2 - game_over_text.get_width() // 2, height // 2 - game_over_text.get_height() // 2))
+
 def check_collision():
     player_rect = pygame.Rect(x_player, y_player, player_width, player_height)
     for obstacle in obstacles:
@@ -85,6 +90,7 @@ running = True
 
 scoreIncreased = False
 firstStart = True
+game_over = False
 
 while running:
     current_time = time.time()
@@ -127,8 +133,15 @@ while running:
             running = False
     
     if check_collision():
-        print("You hit a wall and lost.")
-        running = False
+        game_over = True
+    
+    if game_over:
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+            display_game_over()
+            pygame.display.update()
     
     if score == 50 and scoreIncreased == False:
         obstacle_speed += 1
