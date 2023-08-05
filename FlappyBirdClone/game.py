@@ -127,26 +127,24 @@ while running:
             score += 1
     
     display_score()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
     
     if check_collision():
         game_over = True
     
-    if game_over:
-        while True:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    pygame.quit()
-            display_game_over()
-            pygame.display.update()
+    while game_over:
+        display_game_over()
+        pygame.display.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
     
     if score == 50 and scoreIncreased == False:
         obstacle_speed += 1
         scoreIncreased = True
-    
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
     pygame.display.update()
 
