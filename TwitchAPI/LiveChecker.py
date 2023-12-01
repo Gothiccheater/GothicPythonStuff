@@ -1,13 +1,67 @@
 import requests
-import config
+import json
+from datetime import datetime, timedelta
+import os
+
+global json_path
+global auth_data
+global client_id
+global client_secret
+global token_expiry
+directory = "TwitchAPI"
+json_path = os.path.join(directory, 'config.json')
+if os.path.exists(json_path):
+    with open(json_path, 'r') as json_file:
+        auth_data = json.load(json_file)
+
+        client_id = auth_data.get("client_id")
+        client_secret = auth_data.get("client_secret")
+        access_token = auth_data.get("access_token")
+        token_expiry = datetime.strptime(auth_data.get("token_expiry", "1970-01-01"), "%Y-%m-%d")
+
+def changeAccessToken():
+    token_url = "https://id.twitch.tv/oauth2/token"
+    params = {
+    "client_id": client_id,
+    "client_secret": client_secret,
+    "grant_type": "client_credentials"
+    }
+
+    current_time = datetime.now()
+    expiration = timedelta(days=7)
+
+    if (current_time - token_expiry) > expiration :
+
+        response = requests.post(token_url, params=params)
+
+        if response.status_code == 200:
+            token_data = response.json()
+
+            auth_data = {
+                "client_id": client_id,
+                "client_secret": client_secret,
+                "access_token": token_data.get("access_token"),
+                "token_expiry": datetime.now().strftime("%Y-%m-%d")
+            }
+
+            # Daten in JSON-Datei speichern
+            with open(json_path, 'w') as json_file:
+                json.dump(auth_data, json_file, indent=4)
+
+        else:
+            print("Fehler beim Token-Request. Statuscode:", response.status_code)
+            print("Antwort:", response.text)
+    else:
+        print("Access Token ist noch gültig!")
+
 
 # Twitch API-URL
 url = 'https://api.twitch.tv/helix/streams?user_login={channel_name}'
 
 # Header zusammenstellen
 headers = {
-    'Client-Id': config.client_id,
-    'Authorization': f'Bearer {config.access_token}'
+    'Client-Id': client_id,
+    'Authorization': f'Bearer {access_token}'
 }
 # Array mit Channeln
 channelsToCheck = []
@@ -36,6 +90,7 @@ def getChannels():
     return channelsToCheck
 
 # Funktionsaufrufe um das Skript auszuführen
+changeAccessToken()
 getChannels()
 checkLive(channelsToCheck)
 input()
