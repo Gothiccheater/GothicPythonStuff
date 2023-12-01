@@ -3,11 +3,6 @@ import json
 from datetime import datetime, timedelta
 import os
 
-global json_path
-global auth_data
-global client_id
-global client_secret
-global token_expiry
 directory = "TwitchAPI"
 json_path = os.path.join(directory, 'config.json')
 if os.path.exists(json_path):
@@ -51,8 +46,8 @@ def changeAccessToken():
                 json.dump(auth_data, json_file, indent=4)
 
         else:
-            print("Fehler beim Token-Request. Statuscode:", response.status_code)
-            print("Antwort:", response.text)
+            print("Error fetching token. Status:", response.status_code)
+            print("Answer:", response.text)
     else:
         print("Access Token is valid!")
 
@@ -75,11 +70,16 @@ def checkLive(channel):
         print('----------------------------------------------------------------')
         channel_name = check
         response = requests.get(url.format(channel_name=channel_name), headers=headers)
-        data = response.json()
-        if 'data' in data and data['data']:
-            print(f"{channel_name} is live! Go to https://www.twitch.tv/{channel_name} to watch!")
+        if response.status_code == 200:
+            data = response.json()
+            if 'data' in data and data['data']:
+                print(f"{channel_name} is live! Go to https://www.twitch.tv/{channel_name} to watch!")
+            else:
+                print(f"{channel_name} is offline.")
         else:
-            print(f"{channel_name} is offline.")
+            print("Error: No response from Twitch!")
+            print("Status: ", response.status_code)
+            print("Answer: ", response.text)
 
 # Funktion um User eingeben zu lassen, welche Channel geprüft werden sollen
 def getChannels():
