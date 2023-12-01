@@ -32,6 +32,8 @@ def changeAccessToken():
 
     if (current_time - token_expiry) > expiration :
 
+        print("Access Token is invalid, generating new one!")
+
         response = requests.post(token_url, params=params)
 
         if response.status_code == 200:
@@ -52,7 +54,7 @@ def changeAccessToken():
             print("Fehler beim Token-Request. Statuscode:", response.status_code)
             print("Antwort:", response.text)
     else:
-        print("Access Token ist noch gültig!")
+        print("Access Token is valid!")
 
 
 # Twitch API-URL
