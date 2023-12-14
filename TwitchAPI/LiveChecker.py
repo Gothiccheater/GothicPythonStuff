@@ -73,7 +73,11 @@ def checkLive(channel):
         if response.status_code == 200:
             data = response.json()
             if 'data' in data and data['data']:
-                print(f"{channel_name} is live! Go to https://www.twitch.tv/{channel_name} to watch!")
+                viewers = data['data'][0]['viewer_count']
+                game = data['data'][0]['game_name']
+                title = data['data'][0]['title']
+                print(f"{channel_name} is live! They are streaming \"{game}\" with {viewers} Viewers and their title is \"{title}\".")
+                print(f"Go to https://www.twitch.tv/{channel_name} to watch!")
             else:
                 print(f"{channel_name} is offline.")
         else:
